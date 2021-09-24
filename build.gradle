@@ -3,31 +3,46 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'groovy'
+apply from: rootDir.canonicalPath + '/.gradle/publish.gradle'
 
-group = "com.toastcoders"
-archivesBaseName = "yavijava"
+group = "com.github"
+archivesBaseName = "hyavijava"
 version = '6.0.05'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
-targetCompatibility = 1.6
-sourceCompatibility = 1.6
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile 'org.apache.directory.studio:org.dom4j.dom4j:1.6.1'
-    compile 'log4j:log4j:1.2.17'
-    compile 'org.apache.httpcomponents:httpclient:4.3.5'
-    compile 'org.projectlombok:lombok:1.16.6'
-    testCompile 'javax.servlet:javax.servlet-api:3.1.0'
-    testCompile 'junit:junit-dep:4.11'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
-    testCompile 'cglib:cglib-nodep:3.1'
-    testCompile 'org.objenesis:objenesis:2.1'
+    annotationProcessor 'org.apache.directory.studio:org.dom4j.dom4j:1.6.1'
+    annotationProcessor 'log4j:log4j:1.2.17'
+    annotationProcessor 'org.apache.httpcomponents:httpclient:4.3.5'
+    annotationProcessor 'org.projectlombok:lombok:1.16.6'
+    compileOnly 'org.apache.directory.studio:org.dom4j.dom4j:1.6.1'
+    compileOnly 'log4j:log4j:1.2.17'
+    compileOnly 'org.apache.httpcomponents:httpclient:4.3.5'
+    compileOnly 'org.projectlombok:lombok:1.16.6'
+
+
+    annotationProcessor 'javax.servlet:javax.servlet-api:3.1.0'
+    annotationProcessor 'junit:junit-dep:4.11'
+    annotationProcessor 'junit:junit:4.12'
+    annotationProcessor 'org.spockframework:spock-core:0.7-groovy-2.0'
+    annotationProcessor 'cglib:cglib-nodep:3.1'
+    annotationProcessor 'org.objenesis:objenesis:2.1'
+
+    testCompileOnly  'javax.servlet:javax.servlet-api:3.1.0'
+    testCompileOnly  'junit:junit-dep:4.11'
+    testCompileOnly  'junit:junit:4.12'
+    testCompileOnly  'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompileOnly  'cglib:cglib-nodep:3.1'
+    testCompileOnly  'org.objenesis:objenesis:2.1'
 }
 
 sourceSets {
@@ -37,23 +52,23 @@ sourceSets {
         }
     }
 
-    intTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-        }
-        groovy {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-        }
-    }
-
-    test {
-        java {
-        }
-        groovy {
-        }
-    }
+//    intTest {
+//        java {
+//            compileClasspath += main.output + test.output
+//            runtimeClasspath += main.output + test.output
+//        }
+//        groovy {
+//            compileClasspath += main.output + test.output
+//            runtimeClasspath += main.output + test.output
+//        }
+//    }
+//
+//    test {
+//        java {
+//        }
+//        groovy {
+//        }
+//    }
 }
 
 configurations {
@@ -61,11 +76,11 @@ configurations {
     intTestRuntime.extendsFrom testRuntime
 }
 
-task intTest(type:Test){
-    description = "Run integration tests (located in src/intTest/...)."
-    testClassesDir = project.sourceSets.intTest.output.classesDir
-    classpath = project.sourceSets.intTest.runtimeClasspath
-}
+//task intTest(type:Test){
+//    description = "Run integration tests (located in src/intTest/...)."
+//    testClassesDir = project.sourceSets.intTest.output.classesDir
+//    classpath = project.sourceSets.intTest.runtimeClasspath
+//}
 
 test {
     testLogging {
@@ -77,6 +92,11 @@ task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
 }
+compileJava.options.encoding("UTF-8")
+javadoc.options.encoding("UTF-8")
+allprojects {
+    tasks.withType(Javadoc).all {enabled =false}
+}
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
@@ -87,55 +107,57 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ''
-def ossrhPassword = hasProperty('ossrhPassword') ? ossrhPassword : ''
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'yavijava'
-                packaging 'jar'
-                // optionally artifactId can be defined here
-                description 'Java library for VMware vSphere'
-                url 'https://github.com/yavijava/yavijava'
-
-                scm {
-                    connection 'scm:git:https://github.com/yavijava/yavijava.git'
-                    developerConnection 'scm:git:https://github.com/yavijava/yavijava.git'
-                    url 'https://github.com/yavijava/yavijava'
-                }
-
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+             groupId = "com.github"
+             artifactId = "hyavijava"
+             version = "6.0.05.1"
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                // 构件名称
+                // 区别于artifactId，可以理解为artifactName
+                name = 'hyavijava'
+                // 构件描述
+                description = 'Java library for VMware vSphere'
+                // 构件主页
+                url = 'https://github.com/hyavijava/hyavijava'
+                // 许可证名称和地址
                 licenses {
                     license {
-                        name 'BSD'
-                        url 'http://opensource.org/licenses/BSD-3-Clause'
+                        name = 'BSD'
+                        url = 'http://opensource.org/licenses/BSD-3-Clause'
                     }
                 }
-
+                // 开发者信息
                 developers {
                     developer {
-                        id 'michaelrice'
-                        name 'Michael Rice'
-                        email 'michael@michaelrice.org'
+                        name = 'hyavijava'
+                        email = 'hyavijava@163.com'
                     }
+                }
+                // 版本控制仓库地址
+                scm {
+                    url = 'https://github.com/hyavijava/hyavijava'
+                    connection = 'scm:git:https://github.com/hyavijava/hyavijava.git'
+                    developerConnection = 'scm:git:https://github.com/hyavijava/hyavijava.git'
                 }
             }
         }
     }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }
