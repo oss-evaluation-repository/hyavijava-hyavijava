@@ -58,7 +58,7 @@ class ManagedObjectCache implements Observer
     ManagedObjectCache(ServiceInstance si)
     {
       this.si = si;
-      items = new ConcurrentHashMap<ManagedObjectReference, Map<String, Object>>();
+      items = new ConcurrentHashMap<>();
     }
     
     public Map<ManagedObjectReference, Map<String, Object>> getCachedItems()
@@ -80,7 +80,7 @@ class ManagedObjectCache implements Observer
                     ManagedObjectReference mor = ous[j].getObj();
                     if(! items.containsKey(mor))
                     {
-                        items.put(mor, new ConcurrentHashMap<String, Object>());
+                        items.put(mor, new ConcurrentHashMap<>());
                     }
                     Map<String, Object> moMap = items.get(mor);
                     

@@ -42,8 +42,8 @@ import org.xml.sax.InputSource;
 
 public class CachedManagedObject
 {
-  private String propXML = null;
-  private XPath xpath = null;
+  private String propXML;
+  private XPath xpath;
   
   public CachedManagedObject(String propXML)
   {
@@ -53,7 +53,7 @@ public class CachedManagedObject
   
   public String getProperty(String path) throws XPathExpressionException, IOException
   {
-    String propName = null;
+    String propName;
     int last = path.lastIndexOf(".");
     if(last!=-1)
     {

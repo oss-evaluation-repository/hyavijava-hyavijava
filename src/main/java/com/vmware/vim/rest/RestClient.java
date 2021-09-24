@@ -60,7 +60,7 @@ public class RestClient
   final private static String NONCE = "vmware-session-nonce";
   final private static String NONCE_VAL_START = "value=\"";
   
-  private String baseUrl = null;
+  private String baseUrl;
   
   static 
   {
@@ -147,7 +147,7 @@ public class RestClient
 
   public String post(String urlStr) throws Exception
   {
-    return post(urlStr, new Hashtable<String, String>());
+    return post(urlStr, new Hashtable<>());
   }
     
   public String post(String urlStr, Map<String, String> para) throws Exception

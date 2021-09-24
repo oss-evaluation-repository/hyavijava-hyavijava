@@ -41,9 +41,9 @@ import com.vmware.vim25.mo.ServiceInstance;
 
 public class CacheInstance 
 {
-  ServiceInstance si = null;
-	ManagedObjectWatcher mom = null;
-	ManagedObjectCache cache = null;
+  ServiceInstance si;
+	ManagedObjectWatcher mom;
+	ManagedObjectCache cache;
 	Thread mThread = null;
 	
 	public CacheInstance(ServiceInstance si)

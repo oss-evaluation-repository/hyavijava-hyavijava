@@ -39,9 +39,9 @@ import org.xml.sax.InputSource;
 
 public class RestManagedObject
 {
-  private RestClient rc = null;
-  private String moid = null;
-  private XPath xpath = null;
+  private RestClient rc;
+  private String moid;
+  private XPath xpath;
   
   public RestManagedObject(RestClient rc, String moid)
   {
@@ -69,7 +69,7 @@ public class RestManagedObject
 
   public String getPropertyAsString(String path) throws IOException, XPathExpressionException
   {
-    String propName = null;
+    String propName;
     String doName = "";
     
     int last = path.lastIndexOf(".");
