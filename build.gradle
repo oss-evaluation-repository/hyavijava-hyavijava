@@ -10,7 +10,7 @@ apply from: rootDir.canonicalPath + '/.gradle/publish.gradle'
 
 group = "com.github"
 archivesBaseName = "hyavijava"
-version = '6.0.05'
+version = '6.0.06'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 targetCompatibility = 1.8
 sourceCompatibility = 1.8
@@ -112,7 +112,7 @@ publishing {
         mavenJava(MavenPublication) {
              groupId = "com.github"
              artifactId = "hyavijava"
-             version = "6.0.05.1"
+             version = "6.0.06.1"
             from components.java
             artifact sourcesJar
             artifact javadocJar
